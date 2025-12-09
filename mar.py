@@ -10,7 +10,7 @@ from langchain_community.document_loaders import (
     UnstructuredExcelLoader,
     UnstructuredImageLoader
 )
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # ---------------------------
 # Initialize Groq LLM using Streamlit secrets
