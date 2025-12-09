@@ -2,11 +2,8 @@ import streamlit as st
 import warnings
 warnings.filterwarnings('ignore')
 
-from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
-from langchain_core.tools import Tool
 from langchain_groq import ChatGroq
-from langchain.agents import initialize_agent, AgentType
 from langchain_community.document_loaders import (
     PyPDFLoader,
     UnstructuredWordDocumentLoader,
@@ -15,38 +12,22 @@ from langchain_community.document_loaders import (
 )
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# Load environment variables (.env must contain GROQ_API_KEY)
-load_dotenv()
-
 # ---------------------------
-# Initialize Groq LLM
+# Initialize Groq LLM using Streamlit secrets
 # ---------------------------
-llm = ChatGroq(model="llama3-70b-8192", temperature=0)
+llm = ChatGroq(
+    model="llama3-70b-8192",
+    temperature=0,
+    groq_api_key=st.secrets["GROQ_API_KEY"]
+)
 
-# Prompt template for Marine Data Analyst role
+# Prompt template
 prompt = PromptTemplate.from_template(
     "You are a Marine Data Analyst. Analyze the following content "
     "and provide insights relevant to marine science and operations:\n\n{content}\n\n"
 )
 
-# Modern pipeline style (no LLMChain needed)
 chain = prompt | llm
-
-# Wrap into a Tool for agent use
-summarize_tool = Tool.from_function(
-    func=lambda content: chain.invoke({"content": content}),
-    name="MarineDataSummarizer",
-    description="Analyzes and summarizes marine-related documents"
-)
-
-# Initialize agent
-agent = initialize_agent(
-    tools=[summarize_tool],
-    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-    llm=llm,
-    verbose=True,
-    handle_parsing_errors=True
-)
 
 # ---------------------------
 # Helper: Load and process document
@@ -87,8 +68,7 @@ if uploaded_file and user_query:
     chunks = load_and_process_document(uploaded_file.name)
     content = " ".join([chunk.page_content for chunk in chunks[:5]])  # first 5 chunks
 
-    prompt_text = f"{user_query}\n\nDocument content:\n{content}"
-    response = agent.invoke(prompt_text)
+    response = chain.invoke({"content": f"{user_query}\n\nDocument content:\n{content}"})
 
     st.subheader("Marine Data Analyst Response")
     st.write(response)
