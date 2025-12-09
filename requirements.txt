@@ -21,16 +21,17 @@ unstructured>=0.12.0
 pdfminer.six>=20221105
 python-docx>=1.1.0
 xlrd>=2.0.1
-openpyxl>=3.1.0
+openpyxl>=3.1.0   # modern Excel support
 pandas>=2.0.0
 
 # Tokenization
-tiktoken>=0.7.0
+tiktoken>=0.7.0   # required for LangChain text splitting
 
 # Numerical computing
-numpy>=1.26.0
+numpy>=1.26.0     # used by FAISS and loaders
 
 # Optional helpers
 requests>=2.31.0
 beautifulsoup4>=4.12.2
-pillow>=10.0.0
+pillow>=10.0.0    # image handling support
+python-magic>=0.4.27  # file type detection
