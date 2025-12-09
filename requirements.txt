@@ -40,3 +40,4 @@ python-dotenv>=1.0.0
 
 # Graph library (needed by unstructured and some loaders)
 networkx>=3.0
+msoffcrypto-tool>=5.0.0   # for encrypted Office files
