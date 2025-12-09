@@ -16,7 +16,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 # Initialize Groq LLM using Streamlit secrets
 # ---------------------------
 llm = ChatGroq(
-    model="llama3-70b-8192",
+    model="llama-3.3-70b-versatile",
     temperature=0,
     groq_api_key=st.secrets["GROQ_API_KEY"]
 )
