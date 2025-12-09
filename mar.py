@@ -6,7 +6,7 @@ warnings.filterwarnings('ignore')
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import Tool
 from langchain_groq import ChatGroq
-from langchain.chains.llm import LLMChain
+from langchain.chains import LLMChain
 from langchain.agents import initialize_agent, AgentType
 from langchain_community.document_loaders import (
     PyPDFLoader,
