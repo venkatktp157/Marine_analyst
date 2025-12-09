@@ -8,7 +8,8 @@ from langchain_community.document_loaders import (
     PyPDFLoader,
     UnstructuredWordDocumentLoader,
     UnstructuredExcelLoader,
-    UnstructuredImageLoader
+    UnstructuredImageLoader,
+    CSVLoader   # <-- add this
 )
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -41,6 +42,8 @@ def load_and_process_document(file_path: str):
         loader = UnstructuredExcelLoader(file_path)
     elif file_path.endswith((".png", ".jpeg", ".jpg", ".bmp")):
         loader = UnstructuredImageLoader(file_path)
+    elif file_path.endswith(".csv"):
+        loader = CSVLoader(file_path)   # <-- new branch    
     else:
         raise ValueError("Unsupported file type")
 
@@ -56,7 +59,7 @@ st.title("🌊 Marine Data Analyst Agent")
 
 uploaded_file = st.file_uploader(
     "Upload a marine data file (PDF, Word, Excel, Image)",
-    type=["pdf", "docx", "doc", "xlsx", "xls", "png", "jpeg", "jpg", "bmp"]
+    type=["pdf", "docx", "doc", "xlsx", "xls", "csv","png", "jpeg", "jpg", "bmp"]
 )
 user_query = st.text_area("Enter your query (e.g., 'Summarize salinity trends')")
 

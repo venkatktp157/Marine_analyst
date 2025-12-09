@@ -37,3 +37,6 @@ pillow>=10.0.0    # image handling support
 pydantic>=2.0.0
 typing-extensions>=4.5.0
 python-dotenv>=1.0.0
+
+# Graph library (needed by unstructured and some loaders)
+networkx>=3.0
