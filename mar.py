@@ -2,7 +2,7 @@ import streamlit as st
 import warnings
 warnings.filterwarnings('ignore')
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import Tool
 from langchain_groq import ChatGroq
