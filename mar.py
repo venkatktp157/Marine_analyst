@@ -84,13 +84,20 @@ if uploaded_file and user_query:
 
     # Run summarization
     summary_response = summary_chain.invoke({"content": content})
+
+    # Ensure it's a string
+    if not isinstance(summary_response, str):
+        summary_text = str(summary_response)
+    else:
+        summary_text = summary_response
+
     st.subheader("📄 Document Summary")
-    st.write(summary_response)
+    st.write(summary_text)
     
     # Download button for summary
     st.download_button(
         label="⬇️ Download Summary",
-        data=summary_response,
+        data=summary_text.encode("utf-8"),   # convert to bytes
         file_name="marine_summary.txt",
         mime="text/plain"
     )
