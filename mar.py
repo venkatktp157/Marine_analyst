@@ -85,19 +85,31 @@ if uploaded_file and user_query:
     # Run summarization
     summary_response = summary_chain.invoke({"content": content})
 
-    # Ensure it's a string
-    if not isinstance(summary_response, str):
-        summary_text = str(summary_response)
+    # Extract only the text content
+    if hasattr(summary_response, "content"):
+        summary_text = summary_response.content
     else:
-        summary_text = summary_response
+        summary_text = str(summary_response)
+
+    # Improve readability: format headings and spacing
+    formatted_summary = ""
+    for line in summary_text.split("\n"):
+        if line.strip().startswith("**") and line.strip().endswith("**"):
+            # Treat bold markers as headings
+            heading = line.replace("**", "").upper()
+            formatted_summary += "\n" + heading + "\n" + "-"*40 + "\n"
+        elif line.strip():
+            formatted_summary += line.strip() + "\n"
+        else:
+            formatted_summary += "\n"
 
     st.subheader("📄 Document Summary")
-    st.write(summary_text)
-    
-    # Download button for summary
+    st.text(formatted_summary)
+
+    # Download button for summary as TXT
     st.download_button(
         label="⬇️ Download Summary",
-        data=summary_text.encode("utf-8"),   # convert to bytes
+        data=formatted_summary.encode("utf-8"),   # convert to bytes
         file_name="marine_summary.txt",
         mime="text/plain"
     )
