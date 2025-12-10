@@ -23,12 +23,18 @@ llm = ChatGroq(
 )
 
 # Prompt template
-prompt = PromptTemplate.from_template(
+analysis_prompt = PromptTemplate.from_template(
     "You are a Marine Data Analyst. Analyze the following content "
     "and provide insights relevant to marine science and operations:\n\n{content}\n\n"
 )
 
-chain = prompt | llm
+summary_prompt = PromptTemplate.from_template(
+    "Summarize the following marine data document into a concise report "
+    "highlighting key findings, trends, and recommendations:\n\n{content}\n\n"
+)
+
+analysis_chain = analysis_prompt | llm
+summary_chain = summary_prompt | llm
 
 # ---------------------------
 # Helper: Load and process document
@@ -61,7 +67,7 @@ uploaded_file = st.file_uploader(
     "Upload a marine data file (PDF, Word, Excel, Image)",
     type=["pdf", "docx", "doc", "xlsx", "xls", "csv","png", "jpeg", "jpg", "bmp"]
 )
-user_query = st.text_area("Enter your query (e.g., 'Summarize salinity trends')")
+user_query = st.text_area("Enter your query (e.g., 'Summarize speed trends')")
 
 if uploaded_file and user_query:
     # Save uploaded file temporarily
@@ -71,7 +77,20 @@ if uploaded_file and user_query:
     chunks = load_and_process_document(uploaded_file.name)
     content = " ".join([chunk.page_content for chunk in chunks[:5]])  # first 5 chunks
 
-    response = chain.invoke({"content": f"{user_query}\n\nDocument content:\n{content}"})
-
+    # Run analysis
+    analysis_response = analysis_chain.invoke({"content": f"{user_query}\n\nDocument content:\n{content}"})
     st.subheader("Marine Data Analyst Response")
-    st.write(response)
+    st.write(analysis_response)
+
+    # Run summarization
+    summary_response = summary_chain.invoke({"content": content})
+    st.subheader("📄 Document Summary")
+    st.write(summary_response)
+    
+    # Download button for summary
+    st.download_button(
+        label="⬇️ Download Summary",
+        data=summary_response,
+        file_name="marine_summary.txt",
+        mime="text/plain"
+    )
